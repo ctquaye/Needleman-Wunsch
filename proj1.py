@@ -18,7 +18,7 @@ def processCosts(str):
                 costDictionary.update({lineArray[row][0] + lineArray[0][col]: lineArray[row][col]})
                 # print(lineArray[row][col], end='')
         # print()
-   # print(costDictionary)
+    print(costDictionary)
     return costDictionary
 
 def processWords(str):
