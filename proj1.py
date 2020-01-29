@@ -67,8 +67,8 @@ for tgt in range(len(srcTarget)):
 Sequence2= srcTarget[0][0]
 Sequence1=srcTarget[1][0][0]
 
-#Sequence2='mischief'
-#Sequence1='mischevious'
+Sequence2='mischief'
+Sequence1='mischevious'
 
 print(Sequence1," ",Sequence2)
 
@@ -131,13 +131,16 @@ for rowSeq1 in range(len(Sequence1)+1):
 
 print("length: ",len(path[1][1]))
 
-x=-1; y=-1; resuSeq1=[]; resuSeq2=[]; trace=path[y][x][0]; z=0
+x=-1; y=-1; resuSeq1=[]; resuSeq2=[]; trace=path[y][x][0]; z=0;  operationString=[]
 while(trace != 1000000 or y!= -(len(Sequence1)+1) or x != -(len(Sequence2)+1)):
-    end=-(len(Sequence1) + 1)
 #substitution
     if(trace==0):
         resuSeq2.append(Sequence2[x])
         resuSeq1.append(Sequence1[y])
+        if(Sequence1[y]== Sequence2[x]):
+            operationString.append("k")
+        else:
+            operationString.append("s")
         y=y-1; x=x-1
         if (y == -(len(Sequence1)+1)):
             trace=path[y][x]
@@ -150,6 +153,7 @@ while(trace != 1000000 or y!= -(len(Sequence1)+1) or x != -(len(Sequence2)+1)):
     elif(trace==1):
         resuSeq2.append(Sequence2[x])
         resuSeq1.append("*")
+        operationString.append("d")
         x=x-1
         if (x == -(len(Sequence2)+1)):
             trace=path[y][x]
@@ -162,6 +166,7 @@ while(trace != 1000000 or y!= -(len(Sequence1)+1) or x != -(len(Sequence2)+1)):
     elif(trace==2):
         resuSeq2.append("*")
         resuSeq1.append(Sequence1[y])
+        operationString.append("i")
         y=y-1
         if (y == -(len(Sequence1)+1)):
             trace=path[y][x]
@@ -174,19 +179,27 @@ while(trace != 1000000 or y!= -(len(Sequence1)+1) or x != -(len(Sequence2)+1)):
     elif (x == -(len(Sequence2) + 1)):
         resuSeq2.append("*")
         resuSeq1.append(Sequence1[y])
+        operationString.append("i")
         y = y - 1
         trace = path[y][x]
 
     elif (y == -(len(Sequence1) + 1)):
         resuSeq1.append("*")
         resuSeq2.append(Sequence2[x])
+        operationString.append("d")
         x = x - 1
         trace = path[y][x]
 
 for j in reversed(resuSeq1):
     print(j, end="")
 print()
+for q in range(len(resuSeq1)):
+    print("|", end="")
+print()
 for i in reversed(resuSeq2):
     print(i, end="")
+print()
+for k in reversed(operationString):
+    print(k, end="")
 print()
 
