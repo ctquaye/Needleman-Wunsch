@@ -18,7 +18,7 @@ def processCosts(str):
                 costDictionary.update({lineArray[row][0] + lineArray[0][col]: lineArray[row][col]})
                 # print(lineArray[row][col], end='')
         # print()
-    print(costDictionary)
+    #print(costDictionary)
     return costDictionary
 
 def processWords(str):
@@ -47,16 +47,14 @@ Matrix =[]
 path =[]
 
 #READ COSTS----------------------------------------------------------------------
-#Read costs.csv
-
+#initialize variables
 match = 0
-mismatch = -1
 gapPenalty = 1
 match_mismatch = 0
-
-#Read Levenshtein Costs--------------------
 srcTarget=[]
+#Read Levenshtein Costs--------------------
 costsDictionary=processCosts("costs.csv")
+#Read Confusionn Matrix--------------------
 costs2Dictionary=processCosts("costs2.csv")
 srcTarget=processWords("words.txt")
 #print (srcTarget[1])
@@ -69,8 +67,8 @@ srcTarget=processWords("words.txt")
 Sequence1= srcTarget[0][0]
 Sequence2=srcTarget[1][0][0]
 
-Sequence1='execution'
-Sequence2='intention'
+Sequence2='execution'
+Sequence1='intention'
 
 print(Sequence1," ",Sequence2)
 
@@ -104,7 +102,7 @@ for rowSeq1 in range (len(Sequence1)):
             if findCostKey in costsDictionary:
                 mismatch=costsDictionary.get(findCostKey)
                 #print(mismatch)
-            match_mismatch = mismatch
+            match_mismatch = int(mismatch)
 
         diagonal = Matrix[row-1][col-1]
         left = Matrix[row][col-1]
