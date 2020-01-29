@@ -1,7 +1,7 @@
 #!/usr/bin/env python3.7
 import sys
 import re
-
+import random
 
 def processCosts(str):
     totalLines=[]
@@ -112,53 +112,77 @@ for rowSeq1 in range (len(Sequence1)):
         delete = left + gapPenalty
         insert = top + gapPenalty
         #print(delete,insert, substitute)
+        # Determine possible paths---------------------------------------
         findMin = [substitute, delete, insert]
-        min_value = min(findMin)
-        hop = findMin.index(min(findMin))
-        Matrix[row][col]=min_value
-        path[row][col]=hop
+        possiblePaths = []
+        minValue = min(findMin)
+        for m in range(len(findMin)):
+            if (findMin[m] == minValue):
+                possiblePaths.append(m)
+        #print(possiblePaths)
+
+        Matrix[row][col]=minValue
+        path[row][col]=possiblePaths
 
 for rowSeq1 in range(len(Sequence1)+1):
    for colSeq2 in range(len(Sequence2)+1):
-      print(Matrix[rowSeq1][colSeq2],end=" ")
+      print(path[rowSeq1][colSeq2],end=" ")
    print()
 
-x=-1; y=-1; resuSeq1=[]; resuSeq2=[]; trace=path[y][x];
+print("length: ",len(path[1][1]))
+
+x=-1; y=-1; resuSeq1=[]; resuSeq2=[]; trace=path[y][x][0]; z=0
 while(trace != 1000000 or y!= -(len(Sequence1)+1) or x!= -(len(Sequence2)+1)):
+
     if(trace==0):
         resuSeq2.append(Sequence2[x])
         resuSeq1.append(Sequence1[y])
         y=y-1; x=x-1
-        trace=path[y][x]
+        numOfPaths = len((path[x][y]))
+        numOfPaths=numOfPaths-1
+        z = random.randint(0, numOfPaths)
+        trace=path[y][x][z]
 
     elif(trace==1):
         resuSeq2.append(Sequence2[x])
         resuSeq1.append("*")
         x=x-1
-        trace=path[y][x]
+        numOfPaths = len((path[x][y]))
+        numOfPaths = numOfPaths - 1
+        z = random.randint(0, numOfPaths)
+        trace = path[y][x][z]
 
     elif(trace==2):
         resuSeq2.append("*")
         resuSeq1.append(Sequence1[y])
         y=y-1
-        trace=path[y][x]
+        numOfPaths = len((path[x][y]))
+        numOfPaths = numOfPaths - 1
+        z = random.randint(0, numOfPaths)
+        trace = path[y][x][z]
 
     elif (y == -(len(Sequence1) + 1)):
         resuSeq2.append(Sequence2[x])
         resuSeq1.append("*")
         x = x - 1
-        trace = path[y][x]
+        numOfPaths = len((path[x][y]))
+        numOfPaths = numOfPaths - 1
+        z = random.randint(0, numOfPaths)
+        trace = path[y][x][z]
 
     elif (y == -(len(Sequence1) + 1)):
         resuSeq1.append(Sequence1[y])
         resuSeq2.append("*")
         y = y - 1
-        trace = path[y][x]
+        numOfPaths = len((path[x][y]))
+        numOfPaths = numOfPaths - 1
+        z = random.randint(0, numOfPaths)
+        trace = path[y][x][z]
 
+for j in reversed(resuSeq1):
+    print(j, end="")
+print()
 for i in reversed(resuSeq2):
     print(i, end="")
 print()
 
-for j in reversed(resuSeq1):
-    print(j, end="")
-print("\n")
