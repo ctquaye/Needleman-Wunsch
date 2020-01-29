@@ -60,15 +60,15 @@ srcTarget=processWords("words.txt")
 #print (srcTarget[1])
 
 #Retrieve Sequence 1 and Sequence 2
-#for tgt in range(len(srcTarget)):
- #   Sequence1 = srcTarget[0][tgt]
-  #  for src in range(len(srcTarget)):
-   #     Sequence2 = srcTarget[1][src]
-Sequence1= srcTarget[0][0]
-Sequence2=srcTarget[1][0][0]
+for tgt in range(len(srcTarget)):
+    Sequence1 = srcTarget[0][tgt]
+    for src in range(len(srcTarget)):
+       Sequence2 = srcTarget[1][src]
+Sequence2= srcTarget[0][0]
+Sequence1=srcTarget[1][0][0]
 
-Sequence2='execution'
-Sequence1='intention'
+#Sequence2='mischief'
+#Sequence1='mischevious'
 
 print(Sequence1," ",Sequence2)
 
