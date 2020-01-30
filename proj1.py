@@ -46,7 +46,7 @@ def processWords(str):
 def findCost(costFile, srcWord,tgtWord, row, col,cost):
     findCostKey = srcWord[row] + tgtWord[col]
     if findCostKey in costFile:
-        cost = costsDictionary.get(findCostKey)
+        cost = costFile.get(findCostKey)
     return (cost)
 
 Matrix =[]
@@ -79,16 +79,15 @@ sourceWord='mischief'
 print(sourceWord," ",targetWord)
 
 #INITIALIZATION STEP -------------------------------------------------------------
-
 for rowSrc in range (len(sourceWord)+1):
     new=[]; new2=[]
     for colTgt in range (len(targetWord)+1):
         if(rowSrc ==0) :
             new.append(colTgt)
-            new2.append(1000000)
+            new2.append(8888)
         elif(colTgt==0):
             new.append(rowSrc)
-            new2.append(1000000)
+            new2.append(8888)
         else:
             new.append(0)
             new2.append("x")
@@ -136,7 +135,7 @@ for rowSrc in range(len(sourceWord)+1):
 print("length: ",len(path[1][1]))
 
 x=-1; y=-1; resuSrc=[]; resuTgt=[]; trace=path[y][x][0]; z=0;  operationString=[]
-while(trace != 1000000 or y!= -(len(sourceWord)+1) or x != -(len(targetWord)+1)):
+while(trace != 8888 or y!= -(len(sourceWord)+1) or x != -(len(targetWord)+1)):
 #substitution
     if(trace==0):
         resuTgt.append(targetWord[x])
@@ -146,33 +145,35 @@ while(trace != 1000000 or y!= -(len(sourceWord)+1) or x != -(len(targetWord)+1))
         else:
             operationString.append("s")
         y=y-1; x=x-1
-        if (y == -(len(sourceWord)+1)):
+        if ((y == -(len(sourceWord)+1)) or (x == -(len(targetWord)+1))):
             trace=path[y][x]
         else:
             numOfPaths = len((path[y][x]))
             numOfPaths=numOfPaths-1
             z = random.randint(0, numOfPaths)
             trace=path[y][x][z]
+
 #deletion
-    elif(trace==1):
-        resuTgt.append(targetWord[x])
-        resuSrc.append("*")
-        operationString.append("i")
-        x=x-1
-        if (x == -(len(targetWord)+1)):
-            trace=path[y][x]
-        else:
-            numOfPaths = len((path[y][x]))
-            numOfPaths = numOfPaths - 1
-            z = random.randint(0, numOfPaths)
-            trace = path[y][x][z]
-#insertion
     elif(trace==2):
         resuTgt.append("*")
         resuSrc.append(sourceWord[y])
         operationString.append("d")
         y=y-1
         if (y == -(len(sourceWord)+1)):
+            trace=path[y][x]
+        else:
+            numOfPaths = len((path[y][x]))
+            numOfPaths = numOfPaths - 1
+            z = random.randint(0, numOfPaths)
+            trace = path[y][x][z]
+
+#insertion
+    elif(trace==1):
+        resuTgt.append(targetWord[x])
+        resuSrc.append("*")
+        operationString.append("i")
+        x=x-1
+        if (x == -(len(targetWord)+1)):
             trace=path[y][x]
         else:
             numOfPaths = len((path[y][x]))
@@ -205,7 +206,6 @@ for c in range(len(operationString)):
     else:
        subCost = findCost(costsDictionary,resuSrc,resuTgt,c,c,cost)
        editDistance = editDistance + int(subCost)
-
 
 #Display output---------------------------------
 for j in reversed(resuSrc):
