@@ -67,8 +67,8 @@ for tgt in range(len(srcTarget)):
 Sequence2= srcTarget[0][0]
 Sequence1=srcTarget[1][0][0]
 
-Sequence2='mischief'
-Sequence1='mischevious'
+Sequence2='mischevious'
+Sequence1='mischief'
 
 print(Sequence1," ",Sequence2)
 
@@ -99,8 +99,8 @@ for rowSeq1 in range (len(Sequence1)):
             match_mismatch = match
         else:
             findCostKey = Sequence1[rowSeq1]+Sequence2[colSeq2]
-            if findCostKey in costsDictionary:
-                mismatch=costsDictionary.get(findCostKey)
+            if findCostKey in costs2Dictionary:
+                mismatch=costs2Dictionary.get(findCostKey)
                 #print(mismatch)
             match_mismatch = int(mismatch)
 
