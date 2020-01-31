@@ -43,6 +43,12 @@ def processWords(str):
     sourceTarget.append(modSource)
     return sourceTarget
 
+def findCost(costFile, srcWord,tgtWord, row, col,cost):
+    findCostKey = srcWord[row] + tgtWord[col]
+    if findCostKey in costFile:
+        cost = costFile.get(findCostKey)
+    return (cost)
+
 Matrix =[]
 path =[]
 
@@ -56,33 +62,37 @@ srcTarget=[]
 costsDictionary=processCosts("costs.csv")
 #Read Confusionn Matrix--------------------
 costs2Dictionary=processCosts("costs2.csv")
+#Read Target word and Source words
 srcTarget=processWords("words.txt")
-#print (srcTarget[1])
 
-#Retrieve Sequence 1 and Sequence 2
+#Retrieve Target and Source
 for tgt in range(len(srcTarget)):
-    Sequence1 = srcTarget[0][tgt]
+    sourceWord = srcTarget[0][tgt]
     for src in range(len(srcTarget)):
-       Sequence2 = srcTarget[1][src]
-Sequence2= srcTarget[0][0]
-Sequence1=srcTarget[1][0][0]
+       targetWord = srcTarget[1][src]
+targetWord= srcTarget[0][0]
+sourceWord=srcTarget[1][0][0]
 
+<<<<<<< HEAD
 Sequence2='mischevious'
 Sequence1='mischief'
+=======
+targetWord='mischevious'
+sourceWord='mischief'
+>>>>>>> 932fe489fa303f8f45ae52bc9938698d7defbe1d
 
-print(Sequence1," ",Sequence2)
+print(sourceWord," ",targetWord)
 
 #INITIALIZATION STEP -------------------------------------------------------------
-
-for rowSeq1 in range (len(Sequence1)+1):
+for rowSrc in range (len(sourceWord)+1):
     new=[]; new2=[]
-    for colSeq2 in range (len(Sequence2)+1):
-        if(rowSeq1 ==0) :
-            new.append(colSeq2)
-            new2.append(1000000)
-        elif(colSeq2==0):
-            new.append(rowSeq1)
-            new2.append(1000000)
+    for colTgt in range (len(targetWord)+1):
+        if(rowSrc ==0) :
+            new.append(colTgt)
+            new2.append(8888)
+        elif(colTgt==0):
+            new.append(rowSrc)
+            new2.append(8888)
         else:
             new.append(0)
             new2.append("x")
@@ -90,18 +100,23 @@ for rowSeq1 in range (len(Sequence1)+1):
     path.append(new2)
 
 #SCORING --------------------------------------------------------------------------
-for rowSeq1 in range (len(Sequence1)):
-    for colSeq2 in range (len(Sequence2)):
-        row = rowSeq1+1; col = colSeq2 +1   #skip row 0 and col 0
 
+for rowSrc in range (len(sourceWord)):
+    for colTgt in range (len(targetWord)):
+        row = rowSrc+1; col = colTgt +1   #skip row 0 and col 0
+        cost = 0
         #check if match/mismatch
-        if(Sequence1[rowSeq1] == Sequence2[colSeq2]):
+        if(sourceWord[rowSrc] == targetWord[colTgt]):
             match_mismatch = match
         else:
+<<<<<<< HEAD
             findCostKey = Sequence1[rowSeq1]+Sequence2[colSeq2]
             if findCostKey in costs2Dictionary:
                 mismatch=costs2Dictionary.get(findCostKey)
                 #print(mismatch)
+=======
+            mismatch=findCost(costsDictionary,sourceWord,targetWord,rowSrc,colTgt,cost)
+>>>>>>> 932fe489fa303f8f45ae52bc9938698d7defbe1d
             match_mismatch = int(mismatch)
 
         diagonal = Matrix[row-1][col-1]
@@ -124,51 +139,39 @@ for rowSeq1 in range (len(Sequence1)):
         Matrix[row][col]=minValue
         path[row][col]=possiblePaths
 
-for rowSeq1 in range(len(Sequence1)+1):
-   for colSeq2 in range(len(Sequence2)+1):
-      print(path[rowSeq1][colSeq2],end=" ")
+for rowSrc in range(len(sourceWord)+1):
+   for colTgt in range(len(targetWord)+1):
+      print(path[rowSrc][colTgt],end=" ")
    print()
 
 print("length: ",len(path[1][1]))
 
-x=-1; y=-1; resuSeq1=[]; resuSeq2=[]; trace=path[y][x][0]; z=0;  operationString=[]
-while(trace != 1000000 or y!= -(len(Sequence1)+1) or x != -(len(Sequence2)+1)):
+x=-1; y=-1; resuSrc=[]; resuTgt=[]; trace=path[y][x][0]; z=0;  operationString=[]
+while(trace != 8888 or y!= -(len(sourceWord)+1) or x != -(len(targetWord)+1)):
 #substitution
     if(trace==0):
-        resuSeq2.append(Sequence2[x])
-        resuSeq1.append(Sequence1[y])
-        if(Sequence1[y]== Sequence2[x]):
+        resuTgt.append(targetWord[x])
+        resuSrc.append(sourceWord[y])
+        if(sourceWord[y]== targetWord[x]):
             operationString.append("k")
         else:
             operationString.append("s")
         y=y-1; x=x-1
-        if (y == -(len(Sequence1)+1)):
+        if ((y == -(len(sourceWord)+1)) or (x == -(len(targetWord)+1))):
             trace=path[y][x]
         else:
             numOfPaths = len((path[y][x]))
             numOfPaths=numOfPaths-1
             z = random.randint(0, numOfPaths)
             trace=path[y][x][z]
+
 #deletion
-    elif(trace==1):
-        resuSeq2.append(Sequence2[x])
-        resuSeq1.append("*")
-        operationString.append("d")
-        x=x-1
-        if (x == -(len(Sequence2)+1)):
-            trace=path[y][x]
-        else:
-            numOfPaths = len((path[y][x]))
-            numOfPaths = numOfPaths - 1
-            z = random.randint(0, numOfPaths)
-            trace = path[y][x][z]
-#insertion
     elif(trace==2):
-        resuSeq2.append("*")
-        resuSeq1.append(Sequence1[y])
-        operationString.append("i")
+        resuTgt.append("*")
+        resuSrc.append(sourceWord[y])
+        operationString.append("d")
         y=y-1
-        if (y == -(len(Sequence1)+1)):
+        if (y == -(len(sourceWord)+1)):
             trace=path[y][x]
         else:
             numOfPaths = len((path[y][x]))
@@ -176,30 +179,57 @@ while(trace != 1000000 or y!= -(len(Sequence1)+1) or x != -(len(Sequence2)+1)):
             z = random.randint(0, numOfPaths)
             trace = path[y][x][z]
 
-    elif (x == -(len(Sequence2) + 1)):
-        resuSeq2.append("*")
-        resuSeq1.append(Sequence1[y])
+#insertion
+    elif(trace==1):
+        resuTgt.append(targetWord[x])
+        resuSrc.append("*")
         operationString.append("i")
+        x=x-1
+        if (x == -(len(targetWord)+1)):
+            trace=path[y][x]
+        else:
+            numOfPaths = len((path[y][x]))
+            numOfPaths = numOfPaths - 1
+            z = random.randint(0, numOfPaths)
+            trace = path[y][x][z]
+
+    elif (x == -(len(targetWord) + 1)):
+        resuTgt.append("*")
+        resuSrc.append(sourceWord[y])
+        operationString.append("d")
         y = y - 1
         trace = path[y][x]
 
-    elif (y == -(len(Sequence1) + 1)):
-        resuSeq1.append("*")
-        resuSeq2.append(Sequence2[x])
-        operationString.append("d")
+    elif (y == -(len(sourceWord) + 1)):
+        resuSrc.append("*")
+        resuTgt.append(targetWord[x])
+        operationString.append("i")
         x = x - 1
         trace = path[y][x]
 
-for j in reversed(resuSeq1):
+#Calculate cost---------------------------------
+editDistance=0
+for c in range(len(operationString)):
+    cost = 0
+    if((operationString[c]=='i') or (operationString=='d')):
+        editDistance = editDistance + 1
+    elif(operationString[c]=='k'):
+        pass
+    else:
+       subCost = findCost(costsDictionary,resuSrc,resuTgt,c,c,cost)
+       editDistance = editDistance + int(subCost)
+
+#Display output---------------------------------
+for j in reversed(resuSrc):
     print(j, end="")
 print()
-for q in range(len(resuSeq1)):
+for q in range(len(resuSrc)):
     print("|", end="")
 print()
-for i in reversed(resuSeq2):
+for i in reversed(resuTgt):
     print(i, end="")
 print()
 for k in reversed(operationString):
     print(k, end="")
-print()
+print(" (",editDistance,")")
 
