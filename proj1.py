@@ -10,7 +10,7 @@ def processCosts(str):
         totalLines.append(line)
     lineArray = totalLines[0]
 
-    print(len(lineArray))
+   # print(len(lineArray))
     costDictionary={}
     for row in range(len(lineArray)):
         for col in range(len(lineArray[row])):
@@ -67,156 +67,165 @@ costs2Dictionary=processCosts("costs2.csv")
 srcTarget=processWords("words.txt")
 
 #Retrieve Target and Source
-for tgt in range(len(srcTarget)):
-    sourceWord = srcTarget[0][tgt]
-    for src in range(len(srcTarget)):
-       targetWord = srcTarget[1][src]
-targetWord= srcTarget[0][0]
-sourceWord=srcTarget[1][0][0]
+for tgt in range(len(srcTarget[0])):
+    targetWord = srcTarget[0][tgt]
+    for src in range(len(srcTarget[1][tgt])):
+        print('--------------------------------------------------')
+        sourceWord = srcTarget[1][tgt][src]
+        for nextCost in range(2):
+            if (nextCost)==0:
+                Dictionary=costsDictionary
+            else:
+                Dictionary=costs2Dictionary
+#targetWord= srcTarget[0][0]
+#sourceWord=srcTarget[1][0][0]
+#targetWord='mischievous'
+#sourceWord='devious'
+#print(sourceWord," ",targetWord)
 
-targetWord='mischievous'
-sourceWord='devious'
+        #INITIALIZATION STEP -------------------------------------------------------------
+            for rowSrc in range (len(sourceWord)+1):
+                new=[]; new2=[]
+                for colTgt in range (len(targetWord)+1):
+                    if(rowSrc ==0) :
+                        new.append(colTgt)
+                        new2.append(8888)
+                    elif(colTgt==0):
+                        new.append(rowSrc)
+                        new2.append(8888)
+                    else:
+                        new.append(0)
+                        new2.append("x")
+                Matrix.append(new)
+                path.append(new2)
 
-print(sourceWord," ",targetWord)
+            #SCORING --------------------------------------------------------------------------
 
-#INITIALIZATION STEP -------------------------------------------------------------
-for rowSrc in range (len(sourceWord)+1):
-    new=[]; new2=[]
-    for colTgt in range (len(targetWord)+1):
-        if(rowSrc ==0) :
-            new.append(colTgt)
-            new2.append(8888)
-        elif(colTgt==0):
-            new.append(rowSrc)
-            new2.append(8888)
-        else:
-            new.append(0)
-            new2.append("x")
-    Matrix.append(new)
-    path.append(new2)
+            for rowSrc in range (len(sourceWord)):
+                for colTgt in range (len(targetWord)):
+                    row = rowSrc+1; col = colTgt +1   #skip row 0 and col 0
+                    #check if match/mismatch
+                    if(sourceWord[rowSrc] == targetWord[colTgt]):
+                        match_mismatch = match
+                    else:
+                        mismatch=findCost(Dictionary,sourceWord,targetWord,rowSrc,colTgt,cost)
+                        match_mismatch = int(mismatch)
 
-#SCORING --------------------------------------------------------------------------
+                    diagonal = Matrix[row-1][col-1]
+                    left = Matrix[row][col-1]
+                    top = Matrix[row-1][col]
 
-for rowSrc in range (len(sourceWord)):
-    for colTgt in range (len(targetWord)):
-        row = rowSrc+1; col = colTgt +1   #skip row 0 and col 0
-        #check if match/mismatch
-        if(sourceWord[rowSrc] == targetWord[colTgt]):
-            match_mismatch = match
-        else:
-            mismatch=findCost(costsDictionary,sourceWord,targetWord,rowSrc,colTgt,cost)
-            match_mismatch = int(mismatch)
+                    substitute = diagonal +  int(match_mismatch)
+                    delete = left + gapPenalty
+                    insert = top + gapPenalty
+                    #print(delete,insert, substitute)
+                    # Determine possible paths---------------------------------------
+                    findMin = [substitute, delete, insert]
+                    possiblePaths = []
+                    minValue = min(findMin)
+                    for m in range(len(findMin)):
+                        if (findMin[m] == minValue):
+                            possiblePaths.append(m)
+                    #print(possiblePaths)
 
-        diagonal = Matrix[row-1][col-1]
-        left = Matrix[row][col-1]
-        top = Matrix[row-1][col]
+                    Matrix[row][col]=minValue
+                    path[row][col]=possiblePaths
 
-        substitute = diagonal +  int(match_mismatch)
-        delete = left + gapPenalty
-        insert = top + gapPenalty
-        #print(delete,insert, substitute)
-        # Determine possible paths---------------------------------------
-        findMin = [substitute, delete, insert]
-        possiblePaths = []
-        minValue = min(findMin)
-        for m in range(len(findMin)):
-            if (findMin[m] == minValue):
-                possiblePaths.append(m)
-        #print(possiblePaths)
+           # for rowSrc in range(len(sourceWord)+1):
+            #   for colTgt in range(len(targetWord)+1):
+             #     print(path[rowSrc][colTgt],end=" ")
+              # print()
 
-        Matrix[row][col]=minValue
-        path[row][col]=possiblePaths
+           # print("length: ",len(path[1][1]))
 
-for rowSrc in range(len(sourceWord)+1):
-   for colTgt in range(len(targetWord)+1):
-      print(path[rowSrc][colTgt],end=" ")
-   print()
+            x=-1; y=-1; resuSrc=[]; resuTgt=[]; trace=path[y][x][0]; z=0;  operationString=[]
+            while(trace != 8888 or y!= -(len(sourceWord)+1) or x != -(len(targetWord)+1)):
+            #substitution
+                if(trace==0):
+                    resuTgt.append(targetWord[x])
+                    resuSrc.append(sourceWord[y])
+                    if(sourceWord[y]== targetWord[x]):
+                        operationString.append("k")
+                    else:
+                        operationString.append("s")
+                    y=y-1; x=x-1
+                    if ((y == -(len(sourceWord)+1)) or (x == -(len(targetWord)+1))):
+                        trace=path[y][x]
+                    else:
+                        numOfPaths = len((path[y][x]))
+                        numOfPaths=numOfPaths-1
+                        z = random.randint(0, numOfPaths)
+                        trace=path[y][x][z]
 
-print("length: ",len(path[1][1]))
+            #deletion
+                elif(trace==2):
+                    resuTgt.append("*")
+                    resuSrc.append(sourceWord[y])
+                    operationString.append("d")
+                    y=y-1
+                    if (y == -(len(sourceWord)+1)):
+                        trace=path[y][x]
+                    else:
+                        numOfPaths = len((path[y][x]))
+                        numOfPaths = numOfPaths - 1
+                        z = random.randint(0, numOfPaths)
+                        trace = path[y][x][z]
 
-x=-1; y=-1; resuSrc=[]; resuTgt=[]; trace=path[y][x][0]; z=0;  operationString=[]
-while(trace != 8888 or y!= -(len(sourceWord)+1) or x != -(len(targetWord)+1)):
-#substitution
-    if(trace==0):
-        resuTgt.append(targetWord[x])
-        resuSrc.append(sourceWord[y])
-        if(sourceWord[y]== targetWord[x]):
-            operationString.append("k")
-        else:
-            operationString.append("s")
-        y=y-1; x=x-1
-        if ((y == -(len(sourceWord)+1)) or (x == -(len(targetWord)+1))):
-            trace=path[y][x]
-        else:
-            numOfPaths = len((path[y][x]))
-            numOfPaths=numOfPaths-1
-            z = random.randint(0, numOfPaths)
-            trace=path[y][x][z]
+            #insertion
+                elif(trace==1):
+                    resuTgt.append(targetWord[x])
+                    resuSrc.append("*")
+                    operationString.append("i")
+                    x=x-1
+                    if (x == -(len(targetWord)+1)):
+                        trace=path[y][x]
+                    else:
+                        numOfPaths = len((path[y][x]))
+                        numOfPaths = numOfPaths - 1
+                        z = random.randint(0, numOfPaths)
+                        trace = path[y][x][z]
 
-#deletion
-    elif(trace==2):
-        resuTgt.append("*")
-        resuSrc.append(sourceWord[y])
-        operationString.append("d")
-        y=y-1
-        if (y == -(len(sourceWord)+1)):
-            trace=path[y][x]
-        else:
-            numOfPaths = len((path[y][x]))
-            numOfPaths = numOfPaths - 1
-            z = random.randint(0, numOfPaths)
-            trace = path[y][x][z]
+                elif (x == -(len(targetWord) + 1)):
+                    resuTgt.append("*")
+                    resuSrc.append(sourceWord[y])
+                    operationString.append("d")
+                    y = y - 1
+                    trace = path[y][x]
 
-#insertion
-    elif(trace==1):
-        resuTgt.append(targetWord[x])
-        resuSrc.append("*")
-        operationString.append("i")
-        x=x-1
-        if (x == -(len(targetWord)+1)):
-            trace=path[y][x]
-        else:
-            numOfPaths = len((path[y][x]))
-            numOfPaths = numOfPaths - 1
-            z = random.randint(0, numOfPaths)
-            trace = path[y][x][z]
+                elif (y == -(len(sourceWord) + 1)):
+                    resuSrc.append("*")
+                    resuTgt.append(targetWord[x])
+                    operationString.append("i")
+                    x = x - 1
+                    trace = path[y][x]
 
-    elif (x == -(len(targetWord) + 1)):
-        resuTgt.append("*")
-        resuSrc.append(sourceWord[y])
-        operationString.append("d")
-        y = y - 1
-        trace = path[y][x]
+            #Calculate cost---------------------------------
+            editDistance=0
+            for c in range(len(operationString)):
+                if((operationString[c]=='i') or (operationString[c]=='d')):
+                    editDistance = editDistance + 1
+                elif(operationString[c]=='k'):
+                    pass
+                else:
+                   subCost = findCost(Dictionary,resuSrc,resuTgt,c,c,cost)
+                   editDistance = editDistance + int(subCost)
 
-    elif (y == -(len(sourceWord) + 1)):
-        resuSrc.append("*")
-        resuTgt.append(targetWord[x])
-        operationString.append("i")
-        x = x - 1
-        trace = path[y][x]
-
-#Calculate cost---------------------------------
-editDistance=0
-for c in range(len(operationString)):
-    if((operationString[c]=='i') or (operationString[c]=='d')):
-        editDistance = editDistance + 1
-    elif(operationString[c]=='k'):
-        pass
-    else:
-       subCost = findCost(costsDictionary,resuSrc,resuTgt,c,c,cost)
-       editDistance = editDistance + int(subCost)
-
-#Display output---------------------------------
-for j in reversed(resuSrc):
-    print(j, end="")
-print()
-for q in range(len(resuSrc)):
-    print("|", end="")
-print()
-for i in reversed(resuTgt):
-    print(i, end="")
-print()
-for k in reversed(operationString):
-    print(k, end="")
-print(" (",editDistance,")")
+            #Display output---------------------------------
+            for j in reversed(resuSrc):
+                print(j, end="")
+            print()
+            for q in range(len(resuSrc)):
+                print("|", end="")
+            print()
+            for i in reversed(resuTgt):
+                print(i, end="")
+            print()
+            for k in reversed(operationString):
+                print(k, end="")
+            print(" (",editDistance,")")
+            if(nextCost==0):
+                print()
+            Matrix.clear(); possiblePaths.clear(); path.clear();
+        sourceWord = ""
+    targetWord =""
 

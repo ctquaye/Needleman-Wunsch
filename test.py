@@ -15,3 +15,8 @@ print(findMin)
 x=random.randint(0,)
 print(x)
 
+for nextCost in range(2):
+    if (nextCost) == 1:
+        Dictionary = costsDictionary
+    else:
+        Dictionary = costs2Dictionary
