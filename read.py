@@ -45,10 +45,11 @@ srcTarget=[]
 costsDictionary=processCosts("costs.csv")
 costs2Dictionary=processCosts("costs2.csv")
 srcTarget=processWords("words.txt")
-print (srcTarget[1][0][0])
+print (srcTarget[1][4])
 
 
-
+for x in range (2):
+    print (x)
 
 
 
