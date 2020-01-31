@@ -12,6 +12,6 @@ for row in range(len(findMin)):
     findMin[row]=possiblePaths
 
 print(findMin)
-x=random.randint(0,0)
+x=random.randint(0,)
 print(x)
 

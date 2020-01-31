@@ -53,7 +53,8 @@ Matrix =[]
 path =[]
 
 #READ COSTS----------------------------------------------------------------------
-#initialize variables
+#initialize variable
+cost=0
 match = 0
 gapPenalty = 1
 match_mismatch = 0
@@ -73,8 +74,8 @@ for tgt in range(len(srcTarget)):
 targetWord= srcTarget[0][0]
 sourceWord=srcTarget[1][0][0]
 
-targetWord='mischevious'
-sourceWord='mischief'
+targetWord='mischievous'
+sourceWord='devious'
 
 print(sourceWord," ",targetWord)
 
@@ -99,7 +100,6 @@ for rowSrc in range (len(sourceWord)+1):
 for rowSrc in range (len(sourceWord)):
     for colTgt in range (len(targetWord)):
         row = rowSrc+1; col = colTgt +1   #skip row 0 and col 0
-        cost = 0
         #check if match/mismatch
         if(sourceWord[rowSrc] == targetWord[colTgt]):
             match_mismatch = match
@@ -198,8 +198,7 @@ while(trace != 8888 or y!= -(len(sourceWord)+1) or x != -(len(targetWord)+1)):
 #Calculate cost---------------------------------
 editDistance=0
 for c in range(len(operationString)):
-    cost = 0
-    if((operationString[c]=='i') or (operationString=='d')):
+    if((operationString[c]=='i') or (operationString[c]=='d')):
         editDistance = editDistance + 1
     elif(operationString[c]=='k'):
         pass
